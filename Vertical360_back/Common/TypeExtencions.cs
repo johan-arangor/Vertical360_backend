@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Vertical360_back.Domain.Entityes;
 
-namespace Vertical360_back.Services
+namespace Vertical360_back.Common
 {
     public static class TypeExtencions
     {

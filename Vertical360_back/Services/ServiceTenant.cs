@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Options;
 using Vertical360_back.Application.UseCases;
+using Vertical360_back.Common;
 
 namespace Vertical360_back.Services
 {
