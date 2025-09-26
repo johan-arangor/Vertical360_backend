@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Vertical360_back.Application.UseCases;
 using Vertical360_back.Data;
 using Vertical360_back.Services;
 

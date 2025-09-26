@@ -1,4 +1,4 @@
-﻿namespace Vertical360_back.Services
+﻿namespace Vertical360_back.Application.UseCases
 {
     public interface IServiceUser
     {

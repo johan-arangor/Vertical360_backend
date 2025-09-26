@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Vertical360_back.Application.UseCases;
 using Vertical360_back.Data;
 using Vertical360_back.Domain.Entityes;
 using Vertical360_back.Models;
-using Vertical360_back.Services;
 
 namespace Vertical360_back.Controllers
 {

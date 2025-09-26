@@ -8,6 +8,7 @@ using Vertical360_back.Models;
 using Vertical360_back.Services;
 using Vertical360_back.Security;
 using Vertical360_back.Domain.Entityes;
+using Vertical360_back.Application.UseCases;
 
 namespace Vertical360_back.Controllers
 {
