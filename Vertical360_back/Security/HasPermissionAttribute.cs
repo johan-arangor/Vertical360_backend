@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Vertical360_back.Entityes;
+using Vertical360_back.Domain.Entityes;
 using Vertical360_back.Services;
 
 namespace Vertical360_back.Security

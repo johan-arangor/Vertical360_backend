@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Vertical360_back.Data;
+using Vertical360_back.Domain.Entityes;
 using Vertical360_back.Models;
 using Vertical360_back.Services;
 
@@ -76,7 +77,7 @@ namespace Vertical360_back.Controllers
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 var companiesLink = await _context.CompanyUserPermissions
-                                        .Where(x => x.UserId== user!.Id && x.Permissions == Entityes.Permissions.Null)
+                                        .Where(x => x.UserId== user!.Id && x.Permissions == Permissions.Null)
                                         .OrderBy(x => x.CompanyId)
                                         .Take(2)
                                         .Select(x => x.CompanyId).ToListAsync();

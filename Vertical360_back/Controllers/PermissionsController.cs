@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using Vertical360_back.Data;
-using Vertical360_back.Entityes;
 using Vertical360_back.Models;
 using Vertical360_back.Services;
 using Vertical360_back.Security;
+using Vertical360_back.Domain.Entityes;
 
 namespace Vertical360_back.Controllers
 {

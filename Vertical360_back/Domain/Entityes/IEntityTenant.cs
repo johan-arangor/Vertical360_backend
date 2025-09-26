@@ -1,4 +1,4 @@
-﻿namespace Vertical360_back.Entityes
+﻿namespace Vertical360_back.Domain.Entityes
 {
     public interface IEntityTenant
     {

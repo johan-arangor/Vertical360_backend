@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Vertical360_back.Entityes
+namespace Vertical360_back.Domain.Entityes
 {
     public class CompanyUserPermissions : IEntityCommon
     {

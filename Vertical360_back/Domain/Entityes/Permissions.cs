@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Vertical360_back.Services;
 
-namespace Vertical360_back.Entityes
+namespace Vertical360_back.Domain.Entityes
 {
     public enum Permissions
     {

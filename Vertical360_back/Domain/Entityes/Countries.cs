@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Vertical360_back.Entityes
+namespace Vertical360_back.Domain.Entityes
 {
     public class Countries : IEntityCommon
     {
