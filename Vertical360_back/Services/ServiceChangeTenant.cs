@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Vertical360_back.Application.UseCases;
 using Vertical360_back.Common;
-using Vertical360_back.Data;
+using Vertical360_back.Infrastructure.Persistence;
 
 namespace Vertical360_back.Services
 {

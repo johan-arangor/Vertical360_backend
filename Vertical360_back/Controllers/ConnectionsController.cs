@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Vertical360_back.Application.UseCases;
-using Vertical360_back.Data;
 using Vertical360_back.Domain.Entityes;
+using Vertical360_back.Infrastructure.Persistence;
 using Vertical360_back.Models;
 
 namespace Vertical360_back.Controllers

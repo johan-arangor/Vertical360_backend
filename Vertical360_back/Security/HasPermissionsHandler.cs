@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Vertical360_back.Application.UseCases;
-using Vertical360_back.Data;
+using Vertical360_back.Infrastructure.Persistence;
 
 namespace Vertical360_back.Security
 {

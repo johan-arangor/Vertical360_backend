@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Vertical360_back.Data;
 using Vertical360_back.Domain.Entityes;
+using Vertical360_back.Infrastructure.Persistence;
 using Vertical360_back.Models;
 using Vertical360_back.Security;
 

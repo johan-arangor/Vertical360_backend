@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using Vertical360_back.Data;
 using Vertical360_back.Models;
 using Vertical360_back.Security;
 using Vertical360_back.Domain.Entityes;
 using Vertical360_back.Application.UseCases;
 using Vertical360_back.Common;
+using Vertical360_back.Infrastructure.Persistence;
 
 namespace Vertical360_back.Controllers
 {
