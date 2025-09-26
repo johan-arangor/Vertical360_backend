@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Vertical360_back.Data;
-using Vertical360_back.Services;
+using Vertical360_back.Application.Interfaces.Services;
+using Vertical360_back.Application.UseCases.Implementations;
+using Vertical360_back.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
