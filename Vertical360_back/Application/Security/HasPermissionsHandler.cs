@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Vertical360_back.Application.UseCases;
 using Vertical360_back.Infrastructure.Persistence;
 
-namespace Vertical360_back.Security
+namespace Vertical360_back.Application.Security
 {
     public class HasPermissionsHandler : AuthorizationHandler<HasPermissionRequirement>
     {

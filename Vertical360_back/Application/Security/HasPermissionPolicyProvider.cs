@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Vertical360_back.Common;
 using Vertical360_back.Domain.Entityes;
+using Vertical360_back.Security;
 
-namespace Vertical360_back.Security
+namespace Vertical360_back.Application.Security
 {
     public class HasPermissionPolicyProvider
     {

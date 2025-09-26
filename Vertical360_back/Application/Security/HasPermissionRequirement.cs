@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Vertical360_back.Domain.Entityes;
 
-namespace Vertical360_back.Security
+namespace Vertical360_back.Application.Security
 {
     public class HasPermissionRequirement : IAuthorizationRequirement
     {
