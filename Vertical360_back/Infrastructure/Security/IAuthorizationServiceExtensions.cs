@@ -3,7 +3,7 @@ using System.Security.Claims;
 using Vertical360_back.Common;
 using Vertical360_back.Domain.Entityes;
 
-namespace Vertical360_back.Security
+namespace Vertical360_back.Infrastructure.Security
 {
     public static class IAuthorizationServiceExtensions
     {
