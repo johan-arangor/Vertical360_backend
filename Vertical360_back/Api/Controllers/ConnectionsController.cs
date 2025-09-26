@@ -6,7 +6,7 @@ using Vertical360_back.Domain.Entityes;
 using Vertical360_back.Infrastructure.Persistence;
 using Vertical360_back.Models;
 
-namespace Vertical360_back.Controllers
+namespace Vertical360_back.Api.Controllers
 {
     [Authorize]
     public class ConnectionsController : Controller

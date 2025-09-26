@@ -6,7 +6,7 @@ using Vertical360_back.Infrastructure.Persistence;
 using Vertical360_back.Models;
 using Vertical360_back.Security;
 
-namespace Vertical360_back.Controllers;
+namespace Vertical360_back.Api.Controllers;
 
 public class HomeController : Controller
 {

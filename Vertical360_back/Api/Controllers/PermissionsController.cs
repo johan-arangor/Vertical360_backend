@@ -10,7 +10,7 @@ using Vertical360_back.Application.UseCases;
 using Vertical360_back.Common;
 using Vertical360_back.Infrastructure.Persistence;
 
-namespace Vertical360_back.Controllers
+namespace Vertical360_back.Api.Controllers
 {
     [Authorize]
     public class PermissionsController : Controller
