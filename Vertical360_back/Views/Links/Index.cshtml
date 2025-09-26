@@ -1,0 +1,35 @@
+﻿﻿@using Vertical360_back.Entityes
+@model List<Link>
+
+<h1>Vinculaciones pendientes</h1>
+<h5>
+    Las siguientes empresas te han invitado para que colabores:
+</h5>
+
+<ul>
+    @foreach (var linked in Model)
+    {
+        <form asp-action="Index">
+        <li>
+            <input type="hidden" name="empresaId" value="@linked.CompanyId" />
+            <div>
+                La empresa <span class="font-weight-bold">
+                    @linked.Companie.Name
+                </span> te invita a vincularte.
+            </div>
+            <div>
+                <button type="submit"
+                        asp-route-vinculacionEstatus="@StatusLinkEnum.Acepted"
+                        class="btn btn-primary">
+                    Aceptar
+                </button>
+                <button type="submit"
+                        asp-route-vinculacionEstatus="@StatusLinkEnum.Rejected"
+                        class="btn btn-danger">
+                    Rechazar
+                </button>
+            </div>
+        </li>
+        </form>
+    }
+</ul>
