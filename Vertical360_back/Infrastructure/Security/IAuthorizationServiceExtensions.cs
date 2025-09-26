@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using Vertical360_back.Common;
-using Vertical360_back.Domain.Entityes;
+using Vertical360_back.Domain.Enums;
+using Vertical360_back.Domain.ValueObjects;
 
 namespace Vertical360_back.Infrastructure.Security
 {

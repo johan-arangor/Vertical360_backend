@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Vertical360_back.Models;
+using Vertical360_back.Application.Contracts.DTOs;
 
 namespace Vertical360_back.Domain.Entityes
 {

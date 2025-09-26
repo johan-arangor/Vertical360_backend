@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using Vertical360_back.Models;
-using Vertical360_back.Security;
+using Vertical360_back.Application.Contracts.DTOs;
+using Vertical360_back.Application.Interfaces.Services;
 using Vertical360_back.Domain.Entityes;
-using Vertical360_back.Application.UseCases;
-using Vertical360_back.Common;
+using Vertical360_back.Domain.Enums;
+using Vertical360_back.Domain.ValueObjects;
 using Vertical360_back.Infrastructure.Persistence;
+using Vertical360_back.Infrastructure.Security;
 
 namespace Vertical360_back.Api.Controllers
 {

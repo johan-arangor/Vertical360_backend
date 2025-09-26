@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Vertical360_back.Domain.Enums;
 
 namespace Vertical360_back.Domain.Entityes
 {

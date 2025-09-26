@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Linq.Expressions;
 using System.Reflection;
-using Vertical360_back.Application.UseCases;
-using Vertical360_back.Common;
+using Vertical360_back.Application.Interfaces.Services;
 using Vertical360_back.Domain.Entityes;
+using Vertical360_back.Domain.ValueObjects;
 
 namespace Vertical360_back.Infrastructure.Persistence;
 

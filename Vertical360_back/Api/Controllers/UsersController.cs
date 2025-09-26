@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using Vertical360_back.Application.UseCases;
-using Vertical360_back.Domain.Entityes;
+using Vertical360_back.Application.Interfaces.Services;
+using Vertical360_back.Domain.Enums;
 using Vertical360_back.Infrastructure.Persistence;
 using Vertical360_back.Models;
 
