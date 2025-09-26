@@ -8,7 +8,7 @@ using Vertical360_back.Application.UseCases;
 using Vertical360_back.Common;
 using Vertical360_back.Domain.Entityes;
 
-namespace Vertical360_back.Data;
+namespace Vertical360_back.Infrastructure.Persistence;
 
 public class ApplicationDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
 {
