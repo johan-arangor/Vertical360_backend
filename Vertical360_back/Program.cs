@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Security.Principal;
 using Vertical360_back.Application.Interfaces.Services;
 using Vertical360_back.Application.UseCases.Implementations;
 using Vertical360_back.Infrastructure.Persistence;
+using Vertical360_back.Infrastructure.Persistence.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,16 +22,25 @@ builder.Services.AddDbContext<ApplicationDbContext>((options) =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
-// Configuración de Identity
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+// Configuración de Identity con roles
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
-// Agrega los controladores y las vistas
-builder.Services.AddControllersWithViews();
+// Agrega los controladores y Api's
+builder.Services.AddControllers();
 
 // Registra los servicios personalizados de tu aplicación
 builder.Services.AddScoped<IServiceChangeTenant, ServiceChangeTenant>();
 builder.Services.AddTransient<IServiceUser, ServiceUser>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
@@ -39,18 +51,17 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/error");
     app.UseHsts();
 }
 
+// Ejecutar el seeder antes de levantar la app
+await IdentityDataSeeder.SeedSuperAdminAsync(app.Services);
+
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.MapRazorPages();
 app.Run();
