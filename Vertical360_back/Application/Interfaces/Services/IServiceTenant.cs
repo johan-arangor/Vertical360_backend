@@ -2,6 +2,7 @@
 {
     public interface IServiceTenant
     {
-        string GetTenant();
+        // Devuelve el nombre de la BD del cliente (Tenant DB Name)
+        string GetTenantConnectionString();
     }
 }

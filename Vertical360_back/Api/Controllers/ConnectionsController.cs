@@ -74,7 +74,7 @@ namespace Vertical360_back.Api.Controllers
 
         public async Task<IActionResult> Linked()
         {
-            var companyId = _serviceTenant.GetTenant();
+            var companyId = _serviceTenant.GetTenantConnectionString();
 
             if (string.IsNullOrEmpty(companyId))
             {

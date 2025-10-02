@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Vertical360_back.Application.Contracts.Auth;
 using Vertical360_back.Application.Interfaces.Services;
 using Vertical360_back.Models;
 
@@ -15,17 +16,22 @@ namespace Vertical360_back.Api.Controllers
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(typeof(LoginResultDto), 200)]
+        [ProducesResponseType(401)]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var result = await _authService.LoginAsync(model.Email, model.Password, model.RememberMe);
+            try
+            {
+                var result = await _authService.LoginAsync(model.Email, model.Password, model.RememberMe);
 
-            if (!result.Success)
-                return Unauthorized(new { error = result.ErrorMessage });
-
-            return Ok(new { redirect = result.RedirectUrl, userId = result.UserId });
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { Success = false, ErrorMessage = ex.Message });
+            }
         }
     }
 }

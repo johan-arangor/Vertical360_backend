@@ -1,0 +1,22 @@
+[
+  {
+    "Name": "Antioquia",
+    "Code": "ANT",
+    "CountryCode": "COL"
+  },
+  {
+    "Name": "Cundinamarca",
+    "Code": "CUN",
+    "CountryCode": "COL"
+  },
+  {
+    "Name": "Valle del Cauca",
+    "Code": "VAL",
+    "CountryCode": "COL"
+  },
+  {
+    "Name": "Atlántico",
+    "Code": "ATL",
+    "CountryCode": "COL"
+  }
+]

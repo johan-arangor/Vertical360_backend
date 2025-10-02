@@ -27,7 +27,7 @@ namespace Vertical360_back.Api.Controllers
         [HasPermission(Permissions.Permission_Read)]
         public async Task<ActionResult> Index()
         {
-            var tenantId = new Guid(_serviceTenant.GetTenant());
+            var tenantId = new Guid(_serviceTenant.GetTenantConnectionString());
             var model = await _context.Companies.
                 Include(x => x.CompanyUserPermissions).ThenInclude(x => x.User)
                 .Where(x => x.Id == tenantId)
@@ -47,7 +47,7 @@ namespace Vertical360_back.Api.Controllers
         [HasPermission(Permissions.Permission_Read)]
         public async Task<IActionResult> Administration(string email)
         {
-            var tenantId = new Guid(_serviceTenant.GetTenant());
+            var tenantId = new Guid(_serviceTenant.GetTenantConnectionString());
             var userId = await _context.Users
                 .Where(x => x.Email == email).Select(x => x.Id).FirstOrDefaultAsync();
 
@@ -102,7 +102,7 @@ namespace Vertical360_back.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Administration(AdminPermissionsDTO modelo)
         {
-            var tenantId = new Guid(_serviceTenant.GetTenant());
+            var tenantId = new Guid(_serviceTenant.GetTenantConnectionString());
 
             // Siempre agregamos el permiso por defecto.
             modelo.Permissions.Add(new PermissionUserDTO()

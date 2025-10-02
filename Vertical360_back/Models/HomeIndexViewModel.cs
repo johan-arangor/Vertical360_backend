@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using Vertical360_back.Domain.Entityes;
+using Vertical360_back.Domain.Entityes.Common;
 
 namespace Vertical360_back.Models
 {
