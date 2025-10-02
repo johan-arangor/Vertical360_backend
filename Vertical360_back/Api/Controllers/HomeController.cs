@@ -13,11 +13,13 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly ApplicationDbContext _context;
+    private readonly CommonDbContext _commonDbContext;
 
-    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, CommonDbContext commonDbContext)
     {
         _logger = logger;
         _context = context;
+        _commonDbContext = commonDbContext;
     }
 
     public async Task<IActionResult> Index()
@@ -42,7 +44,7 @@ public class HomeController : Controller
     private async Task<HomeIndexViewModel> ConstructHomeIndex()
     {
         var products = await _context.Products.ToListAsync();
-        var countries = await _context.Countries.ToListAsync();
+        var countries = await _commonDbContext.Countries.ToListAsync();
 
         var modelo = new HomeIndexViewModel();
         modelo.Products = products;
