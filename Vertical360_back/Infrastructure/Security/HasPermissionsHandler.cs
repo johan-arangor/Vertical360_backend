@@ -22,7 +22,7 @@ namespace Vertical360_back.Infrastructure.Security
         {
             var permission = requirement.Permission;
             var userId = _serviceUser.GetUserId();
-            var tenantId = new Guid(_serviceTenant.GetTenant());
+            var tenantId = new Guid(_serviceTenant.GetTenantConnectionString());
 
             var hasPrmission = await _context.CompanyUserPermissions
                 .AnyAsync(x => x.UserId == userId
