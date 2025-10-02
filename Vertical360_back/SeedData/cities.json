@@ -1,0 +1,22 @@
+[
+  {
+    "Name": "Medellín",
+    "Code": "MED",
+    "DepartmentCode": "ANT"
+  },
+  {
+    "Name": "Bogotá",
+    "Code": "BOG",
+    "DepartmentCode": "CUN"
+  },
+  {
+    "Name": "Cali",
+    "Code": "CAL",
+    "DepartmentCode": "VAL"
+  },
+  {
+    "Name": "Barranquilla",
+    "Code": "BARR",
+    "DepartmentCode": "ATL"
+  }
+]
