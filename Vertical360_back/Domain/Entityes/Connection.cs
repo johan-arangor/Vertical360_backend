@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.VisualBasic;
+using Vertical360_back.Domain.Entityes.Common;
 using Vertical360_back.Domain.Enums;
 
 namespace Vertical360_back.Domain.Entityes
