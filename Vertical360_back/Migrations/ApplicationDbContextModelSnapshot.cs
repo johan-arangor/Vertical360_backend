@@ -551,7 +551,7 @@ namespace Vertical360_back.Migrations
             modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.LinkUserCompany", b =>
                 {
                     b.HasOne("Vertical360_back.Domain.Entityes.Common.Companies", "Company")
-                        .WithMany()
+                        .WithMany("linkUserCompanies")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -585,6 +585,8 @@ namespace Vertical360_back.Migrations
             modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.Companies", b =>
                 {
                     b.Navigation("CompanyUserPermissions");
+
+                    b.Navigation("linkUserCompanies");
                 });
 
             modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.Countries", b =>

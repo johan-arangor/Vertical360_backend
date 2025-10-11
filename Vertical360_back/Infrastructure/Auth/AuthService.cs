@@ -25,18 +25,18 @@ namespace Vertical360_back.Infrastructure.Auth
             _context = context;
         }
 
-        public async Task<LoginResultDto> LoginAsync(string email, string password, bool rememberMe)
+        public async Task<LoginResultDto> LoginAsync(LoginRequestDto model)
         {
             var resultDto = new LoginResultDto();
             // Autenticar el usuario usando ASP.NET Identity
-            var signInResult = await _signInManager.PasswordSignInAsync(email, password, rememberMe, false);
+            var signInResult = await _signInManager.PasswordSignInAsync(model.Document, model.Password, model.RememberMe, false);
 
             if (!signInResult.Succeeded)
             {
                 throw new UnauthorizedAccessException("Credenciales invalidas o cuenta no confirmada.");
             }
 
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByNameAsync(model.Document);
 
             if (user == null)
             {
@@ -55,8 +55,8 @@ namespace Vertical360_back.Infrastructure.Auth
             }
             else
             {
-                // Si es un usuario normal (tenant user), redirigir a la selección de rol/compañía
-                resultDto.RedirectUrl = "home/selected-role";
+                // Si es un usuario normal (tenant user), redirigir a la selección de compañía
+                resultDto.RedirectUrl = "home/select-company";
             }
             // Obtener las compañías (Clientes) asociadas a este usuario
             var associatedClients = await _context.LinkUsersCompany
@@ -65,7 +65,7 @@ namespace Vertical360_back.Infrastructure.Auth
                     _context.Companies,
                     link => link.CompanyId,
                     company => company.Id,
-                    (link, company) => new ClientInfoDTO
+                    (link, company) => new ClientInfoDto
                     {
                         CompanyId = company.Id,
                         Name = company.Name,

@@ -6,9 +6,11 @@ using System.Text;
 using Vertical360_back.Application.Configuration;
 using Vertical360_back.Application.Interfaces.Services;
 using Vertical360_back.Application.UseCases.Implementations;
+using Vertical360_back.Infrastructure;
 using Vertical360_back.Infrastructure.Auth;
 using Vertical360_back.Infrastructure.Persistence;
 using Vertical360_back.Infrastructure.Services;
+using Vertical360_back.Services.Company;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,11 +59,15 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// REgistro de repositorios y EfRepository
+builder.Services.AddInfrastructure();
+
 // Servicios propios
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IServiceUser, ServiceUser>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
 
 // Servicio para obtener tenant actual (por claim o header)
 builder.Services.AddScoped<ICurrentTenantService, CurrentTenantService>();

@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Vertical360_back.Application.Common.Errors;
+using Vertical360_back.Application.Common.Responses;
 using Vertical360_back.Application.Contracts.Auth;
 using Vertical360_back.Application.Interfaces.Services;
-using Vertical360_back.Models;
 
 namespace Vertical360_back.Api.Controllers
 {
     [ApiController]
-    public class UsersController : Controller
+    [Route("")]
+    public class UsersController : BaseController
     {
         private readonly IAuthService _authService;
 
@@ -16,21 +18,27 @@ namespace Vertical360_back.Api.Controllers
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(typeof(LoginResultDto), 200)]
-        [ProducesResponseType(401)]
-        public async Task<IActionResult> Login([FromBody] LoginViewModel model)
+        [ProducesResponseType(typeof(LoginResultDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(new ErrorResponse
+                {
+                    Code = "VALIDATION_ERROR",
+                    Message = ErrorCatalog.Messages["VALIDATION_ERROR"]
+                });
 
             try
             {
-                var result = await _authService.LoginAsync(model.Email, model.Password, model.RememberMe);
-
-                return Ok(result);
+                var result = await _authService.LoginAsync(model);
+                return Ok(new { success = true, data = result });
             }
-            catch (UnauthorizedAccessException ex)
+            catch (Exception ex)
             {
-                return Unauthorized(new { Success = false, ErrorMessage = ex.Message });
+                return HandleException(ex);
             }
         }
     }

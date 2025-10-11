@@ -4,6 +4,6 @@ namespace Vertical360_back.Application.Interfaces.Services
 {
     public interface IAuthService
     {
-        Task<LoginResultDto> LoginAsync(string email, string password, bool rememberMe);
+        Task<LoginResultDto> LoginAsync(LoginRequestDto model);
     }
 }

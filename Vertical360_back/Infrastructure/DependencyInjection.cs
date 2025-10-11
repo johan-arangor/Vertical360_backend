@@ -1,5 +1,6 @@
 ﻿using Vertical360_back.Domain.Interfaces;
 using Vertical360_back.Infrastructure.Persistence;
+using Vertical360_back.Infrastructure.Persistence.Repositories;
 using Vertical360_back.Infrastructure.Repositories;
 
 namespace Vertical360_back.Infrastructure
@@ -10,6 +11,7 @@ namespace Vertical360_back.Infrastructure
         {
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IResidentRepository, ResidentRepository>();
+            services.AddScoped<ICompanyRepository, CompanyRepository>();
 
             return services;
         }
