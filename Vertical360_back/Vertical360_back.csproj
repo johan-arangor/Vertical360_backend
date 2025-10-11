@@ -22,7 +22,7 @@
   <ItemGroup>
     <Folder Include="Application\Interfaces\Repos\" />
     <Folder Include="Common\" />
-    <Folder Include="Domain\Entityes\Tenant\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

@@ -7,10 +7,10 @@ using Vertical360_back.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace Vertical360_back.Migrations.CommonDb
+namespace Vertical360_back.Migrations
 {
-    [DbContext(typeof(CommonDbContext))]
-    partial class CommonDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ApplicationDbContext))]
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -234,7 +234,7 @@ namespace Vertical360_back.Migrations.CommonDb
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Cities", (string)null);
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.Companies", b =>
@@ -242,10 +242,6 @@ namespace Vertical360_back.Migrations.CommonDb
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
-
-                    b.Property<string>("ConnectionString")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -258,7 +254,35 @@ namespace Vertical360_back.Migrations.CommonDb
 
                     b.HasIndex("UserCreationId");
 
-                    b.ToTable("Companies", (string)null);
+                    b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.Connection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Connections");
                 });
 
             modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.Countries", b =>
@@ -272,12 +296,6 @@ namespace Vertical360_back.Migrations.CommonDb
                         .HasMaxLength(10)
                         .HasColumnType("varchar(10)");
 
-                    b.Property<Guid>("DepartamentId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("DepartmentId")
-                        .HasColumnType("char(36)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -290,9 +308,7 @@ namespace Vertical360_back.Migrations.CommonDb
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DepartmentId");
-
-                    b.ToTable("Countries", (string)null);
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.Departments", b =>
@@ -318,16 +334,13 @@ namespace Vertical360_back.Migrations.CommonDb
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.LinkUserCompany", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("CompaniesId")
                         .HasColumnType("char(36)");
 
                     b.Property<Guid>("CompanyId")
@@ -348,37 +361,90 @@ namespace Vertical360_back.Migrations.CommonDb
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompaniesId");
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("UserIdentityId");
 
-                    b.ToTable("LinkUsersCommpany", (string)null);
+                    b.ToTable("LinkUsersCompany");
                 });
 
             modelBuilder.Entity("Vertical360_back.Domain.Entityes.CompanyUserPermissions", b =>
                 {
-                    b.Property<Guid>("CompanyId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int>("Permissions")
-                        .HasColumnType("int");
 
                     b.Property<Guid?>("CompaniesId")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("CompanyId")
                         .HasColumnType("char(36)");
 
-                    b.HasKey("CompanyId", "UserId", "Permissions");
+                    b.Property<int>("Permissions")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("CompaniesId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CompanyUserPermissions", (string)null);
+                    b.ToTable("CompanyUserPermissions");
+                });
+
+            modelBuilder.Entity("Vertical360_back.Domain.Entityes.Tenants.Resident", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Apartment")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Document")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<int>("DocumentType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FirtsName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("MiddleLastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Residents");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -452,15 +518,23 @@ namespace Vertical360_back.Migrations.CommonDb
                     b.Navigation("UserCreation");
                 });
 
-            modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.Countries", b =>
+            modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.Connection", b =>
                 {
-                    b.HasOne("Vertical360_back.Domain.Entityes.Common.Departments", "Department")
+                    b.HasOne("Vertical360_back.Domain.Entityes.Common.Companies", "Company")
                         .WithMany()
-                        .HasForeignKey("DepartmentId")
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Department");
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.Departments", b =>
@@ -476,9 +550,9 @@ namespace Vertical360_back.Migrations.CommonDb
 
             modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.LinkUserCompany", b =>
                 {
-                    b.HasOne("Vertical360_back.Domain.Entityes.Common.Companies", "Companies")
+                    b.HasOne("Vertical360_back.Domain.Entityes.Common.Companies", "Company")
                         .WithMany()
-                        .HasForeignKey("CompaniesId")
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -486,7 +560,7 @@ namespace Vertical360_back.Migrations.CommonDb
                         .WithMany()
                         .HasForeignKey("UserIdentityId");
 
-                    b.Navigation("Companies");
+                    b.Navigation("Company");
 
                     b.Navigation("UserIdentity");
                 });

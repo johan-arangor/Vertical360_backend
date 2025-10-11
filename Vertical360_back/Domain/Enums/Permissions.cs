@@ -10,9 +10,12 @@ namespace Vertical360_back.Domain.Enums
         [Display(Description = "Puede crear")]
         Product_Create = 1,
         [Display(Description = "Puede Leer")]
-        Proctuct_Read = 2,
+        Product_Read = 2,
+        [Display(Description = "Puede vincular usuarios")]
         User_Link = 3,
+        [Display(Description = "Puede leer permisos")]
         Permission_Read = 4,
+        [Display(Description = "Puede actualizar permisos")]
         Permission_Update = 5
     }
 }

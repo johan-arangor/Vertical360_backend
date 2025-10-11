@@ -4,12 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace Vertical360_back.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTablesTenant : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -79,6 +77,8 @@ namespace Vertical360_back.Migrations
                     Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Code = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PhoneCode = table.Column<string>(type: "varchar(4)", maxLength: 4, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -88,24 +88,30 @@ namespace Vertical360_back.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "Residents",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Name = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
+                    TenantId = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: false)
+                    FirtsName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Price = table.Column<decimal>(type: "decimal(65,30)", maxLength: 100, nullable: false),
-                    Stock = table.Column<int>(type: "int", maxLength: 100, nullable: false),
-                    Category = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    MiddleName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ImageUrl = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    LastName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    MiddleLastName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Document = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DocumentType = table.Column<int>(type: "int", nullable: false),
+                    Apartment = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.PrimaryKey("PK_Residents", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -258,9 +264,33 @@ namespace Vertical360_back.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Departments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Code = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CountryId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Departments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Departments_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "CompanyUserPermissions",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     UserId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CompanyId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
@@ -269,7 +299,7 @@ namespace Vertical360_back.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompanyUserPermissions", x => new { x.CompanyId, x.UserId, x.Permissions });
+                    table.PrimaryKey("PK_CompanyUserPermissions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_CompanyUserPermissions_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -285,47 +315,86 @@ namespace Vertical360_back.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "LinkUsersCommpany",
+                name: "Connections",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     CompanyId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    UserId = table.Column<string>(type: "longtext", nullable: false)
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    statusLink = table.Column<int>(type: "int", nullable: false),
-                    DateTimeCreate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CompaniesId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    UserIdentityId = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LinkUsersCommpany", x => x.Id);
+                    table.PrimaryKey("PK_Connections", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LinkUsersCommpany_AspNetUsers_UserIdentityId",
-                        column: x => x.UserIdentityId,
+                        name: "FK_Connections_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LinkUsersCommpany_Companies_CompaniesId",
-                        column: x => x.CompaniesId,
+                        name: "FK_Connections_Companies_CompanyId",
+                        column: x => x.CompanyId,
                         principalTable: "Companies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.InsertData(
-                table: "Countries",
-                columns: new[] { "Id", "Code", "Name" },
-                values: new object[,]
+            migrationBuilder.CreateTable(
+                name: "LinkUsersCompany",
+                columns: table => new
                 {
-                    { new Guid("444d2ba0-8932-4f4f-9066-d304e3837497"), "CHL", "Chile" },
-                    { new Guid("7d494ba3-d99f-4654-9606-9b6e6a7b251f"), "ARG", "Argentina" },
-                    { new Guid("f38b29f6-c268-4df9-b946-258c2ef82725"), "COL", "Colombia" },
-                    { new Guid("ff5ea14a-e3cb-48fb-ac47-ceac03b8a7f8"), "BRA", "Brasil" }
-                });
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    CompanyId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    UserId = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    statusLink = table.Column<int>(type: "int", nullable: false),
+                    DateTimeCreate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    UserIdentityId = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LinkUsersCompany", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LinkUsersCompany_AspNetUsers_UserIdentityId",
+                        column: x => x.UserIdentityId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_LinkUsersCompany_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Cities",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Code = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DepartmentId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cities", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Cities_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -365,6 +434,11 @@ namespace Vertical360_back.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cities_DepartmentId",
+                table: "Cities",
+                column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Companies_UserCreationId",
                 table: "Companies",
                 column: "UserCreationId");
@@ -380,13 +454,28 @@ namespace Vertical360_back.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LinkUsersCommpany_CompaniesId",
-                table: "LinkUsersCommpany",
-                column: "CompaniesId");
+                name: "IX_Connections_CompanyId",
+                table: "Connections",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LinkUsersCommpany_UserIdentityId",
-                table: "LinkUsersCommpany",
+                name: "IX_Connections_UserId",
+                table: "Connections",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Departments_CountryId",
+                table: "Departments",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LinkUsersCompany_CompanyId",
+                table: "LinkUsersCompany",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LinkUsersCompany_UserIdentityId",
+                table: "LinkUsersCompany",
                 column: "UserIdentityId");
         }
 
@@ -409,22 +498,31 @@ namespace Vertical360_back.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Cities");
+
+            migrationBuilder.DropTable(
                 name: "CompanyUserPermissions");
 
             migrationBuilder.DropTable(
-                name: "Countries");
+                name: "Connections");
 
             migrationBuilder.DropTable(
-                name: "LinkUsersCommpany");
+                name: "LinkUsersCompany");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Residents");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Departments");
+
+            migrationBuilder.DropTable(
                 name: "Companies");
+
+            migrationBuilder.DropTable(
+                name: "Countries");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

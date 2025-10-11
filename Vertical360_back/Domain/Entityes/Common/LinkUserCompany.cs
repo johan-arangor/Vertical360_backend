@@ -9,7 +9,7 @@ namespace Vertical360_back.Domain.Entityes.Common
         public string UserId { get; set; } = null!;
         public StatusLinkEnum statusLink { get; set; }
         public DateTime DateTimeCreate { get; set; }
-        public Companies Companies { get; set; } = null!;
+        public Companies Company { get; set; } = null!;
         public IdentityUser UserIdentity { get; set; } = null!;
     }
 }

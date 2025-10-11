@@ -2,23 +2,21 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using Vertical360_back.Application.Contracts.DTOs;
-using Vertical360_back.Application.Interfaces.Services;
-using Vertical360_back.Domain.Entityes;
 using Vertical360_back.Domain.Entityes.Common;
 
 namespace Vertical360_back.Infrastructure.Persistence
 {
-    public class CommonDbSeeder : ICommonDbSeeder
+    public class ApplicationDbSeeder
     {
-        private readonly CommonDbContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _env;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public CommonDbSeeder(CommonDbContext commonDbSeeder, IWebHostEnvironment webHostEnvironment, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public ApplicationDbSeeder(ApplicationDbContext context, IWebHostEnvironment env, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
-            _context = commonDbSeeder;
-            _webHostEnvironment = webHostEnvironment;
+            _context = context;
+            _env = env;
             _userManager = userManager;
             _roleManager = roleManager;
         }
@@ -34,6 +32,7 @@ namespace Vertical360_back.Infrastructure.Persistence
             if (!await _context.Departments.AnyAsync()) await SeedDepartmentsAsync();
             if (!await _context.Cities.AnyAsync()) await SeedCitiesAsync();
         }
+
         private async Task SeedIdentityAsync()
         {
             await SeedRolesAsync();
@@ -84,7 +83,6 @@ namespace Vertical360_back.Infrastructure.Persistence
             if (user == null) return;
 
             const string companyName = "Vertical 360 - Initial Tenant";
-            const string tenantDbConnection = "Server=localhost;Database=tenant_vertical360;User Id=root;Password=root;";
 
             // Verifica si ya existe una compañía
             if (!_context.Companies.Any(c => c.Name == companyName))
@@ -93,8 +91,6 @@ namespace Vertical360_back.Infrastructure.Persistence
                 {
                     Id = Guid.NewGuid(),
                     Name = companyName,
-                    // Usamos una cadena de conexión ficticia para el primer tenant
-                    ConnectionString = tenantDbConnection,
                     UserCreationId = user.Id
                 };
 
@@ -108,14 +104,14 @@ namespace Vertical360_back.Infrastructure.Persistence
                     UserId = user.Id
                 };
 
-                _context.LinkUsersCommpany.Add(link);
+                _context.LinkUsersCompany.Add(link);
                 await _context.SaveChangesAsync();
             }
         }
 
         private async Task SeedCountriesAsync()
         {
-            var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "SeedData", "countries.json");
+            var filePath = Path.Combine(_env.ContentRootPath, "SeedData", "countries.json");
 
             if (!File.Exists(filePath)) return;
 
@@ -143,7 +139,7 @@ namespace Vertical360_back.Infrastructure.Persistence
 
         private async Task SeedDepartmentsAsync()
         {
-            var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "SeedData", "departments.json");
+            var filePath = Path.Combine(_env.ContentRootPath, "SeedData", "departments.json");
 
             if (!File.Exists(filePath)) return;
 
@@ -183,7 +179,7 @@ namespace Vertical360_back.Infrastructure.Persistence
 
         private async Task SeedCitiesAsync()
         {
-            var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "SeedData", "cities.json");
+            var filePath = Path.Combine(_env.ContentRootPath, "SeedData", "cities.json");
 
             if (!File.Exists(filePath)) return;
 

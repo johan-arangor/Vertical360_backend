@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.VisualBasic;
-using Vertical360_back.Domain.Entityes.Common;
 using Vertical360_back.Domain.Enums;
 
-namespace Vertical360_back.Domain.Entityes
+namespace Vertical360_back.Domain.Entityes.Common
 {
-    public class Connection : IEntityCommon
+    public class Connection : BaseEntity, IEntityCommon
     {
-        public int Id { get; set; }
         public Guid CompanyId { get; set; }
         public string UserId { get; set; } = null!;
         public StatusLinkEnum Status { get; set; }
