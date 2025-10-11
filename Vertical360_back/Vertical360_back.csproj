@@ -20,8 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Interfaces\Repos\" />
-    <Folder Include="Common\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

@@ -23,45 +23,45 @@ namespace Vertical360_back.Infrastructure.Persistence
 
         public async Task SeedAsync()
         {
+            const string adminDocument = "1234567890";
+            const string adminEmail = "admin@vertical360.com";
+            const string adminPassword = "SuperAdminPass123!";
+            const string superAdminRole = "PlatformSuperAdmin";
+            const string companyName = "Vertical 360 - Initial Tenant";
+
             // Asegurar que la Base de Datos esté actualizada (se pueden usar migraciones)
             await _context.Database.MigrateAsync();
-            await SeedIdentityAsync();
-            await SeedInitialCompanyAndLink();
+            await SeedIdentityAsync(adminDocument, adminEmail, adminPassword, superAdminRole);
+            await SeedInitialCompanyAndLink(adminDocument, companyName);
 
             if (!await _context.Countries.AnyAsync()) await SeedCountriesAsync();
             if (!await _context.Departments.AnyAsync()) await SeedDepartmentsAsync();
             if (!await _context.Cities.AnyAsync()) await SeedCitiesAsync();
         }
 
-        private async Task SeedIdentityAsync()
+        private async Task SeedIdentityAsync(string adminDocument, string adminEmail, string adminPassword, string superAdminRole)
         {
-            await SeedRolesAsync();
-            await SeedSuperAdminUserAsync();
+            await SeedRolesAsync(superAdminRole);
+            await SeedSuperAdminUserAsync(adminDocument, adminEmail, adminPassword, superAdminRole);
         }
 
-        private async Task SeedRolesAsync()
+        private async Task SeedRolesAsync(string superAdminRole)
         {
-            const string superAdminRole = "PlatformSuperAdmin";
-
             if (!await _roleManager.RoleExistsAsync(superAdminRole))
             {
                 await _roleManager.CreateAsync(new IdentityRole(superAdminRole));
             }
         }
 
-        private async Task SeedSuperAdminUserAsync()
+        private async Task SeedSuperAdminUserAsync(string adminDocument, string adminEmail, string adminPassword, string superAdminRole)
         {
-            const string adminEmail = "admin@vertical360.com";
-            const string adminPassword = "SuperAdminPass123!";
-            const string superAdminRole = "PlatformSuperAdmin";
-
             var user = await _userManager.FindByEmailAsync(adminEmail);
 
             if (user == null)
             {
                 var superUser = new IdentityUser
                 {
-                    UserName = adminEmail,
+                    UserName = adminDocument,
                     Email = adminEmail,
                     EmailConfirmed = true
                 };
@@ -75,14 +75,12 @@ namespace Vertical360_back.Infrastructure.Persistence
             }
         }
 
-        public async Task SeedInitialCompanyAndLink()
+        public async Task SeedInitialCompanyAndLink(string adminDocument, string companyName)
         {
-            const string adminEmail = "admin@vertical360.com";
-            var user = await _userManager.FindByEmailAsync(adminEmail);
+            var user = await _userManager.FindByNameAsync(adminDocument);
 
             if (user == null) return;
 
-            const string companyName = "Vertical 360 - Initial Tenant";
 
             // Verifica si ya existe una compañía
             if (!_context.Companies.Any(c => c.Name == companyName))

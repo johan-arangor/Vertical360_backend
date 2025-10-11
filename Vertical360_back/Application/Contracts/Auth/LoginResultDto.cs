@@ -8,6 +8,6 @@
         public string? Message { get; set; }
         public string? ErrorMessage { get; set; }
         public string? Token { get; set; }
-        public List<ClientInfoDTO> AssociatedClients { get; set; } = new List<ClientInfoDTO>();
+        public List<ClientInfoDto> AssociatedClients { get; set; } = new List<ClientInfoDto>();
     }
 }

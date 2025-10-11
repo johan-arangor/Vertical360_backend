@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Vertical360_back.Domain.Enums;
 
-namespace Vertical360_back.Models
+namespace Vertical360_back.Application.Contracts.Auth
 {
-    public class LoginViewModel
+    public class LoginRequestDto
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; } = null!;
+        public string Document { get; set; } = null!;
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; } = null!;

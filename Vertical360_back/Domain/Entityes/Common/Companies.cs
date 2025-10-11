@@ -10,7 +10,8 @@ namespace Vertical360_back.Domain.Entityes.Common
         #region relations
         public string? UserCreationId { get; set; }
         public IdentityUser UserCreation { get; set; } = null!;
-        public List<CompanyUserPermissions> CompanyUserPermissions { get; set; } = null!;
+        public List<LinkUserCompany> linkUserCompanies { get; set; } = new();
+        public List<CompanyUserPermissions> CompanyUserPermissions { get; set; } = new();
         #endregion
     }
 }
