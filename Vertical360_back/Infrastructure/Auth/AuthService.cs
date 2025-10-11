@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Vertical360_back.Application.Configuration;
 using Vertical360_back.Application.Contracts.Auth;
 using Vertical360_back.Application.Interfaces.Services;
-using Vertical360_back.Domain.Enums;
 using Vertical360_back.Infrastructure.Persistence;
 
 namespace Vertical360_back.Infrastructure.Auth
@@ -12,20 +10,17 @@ namespace Vertical360_back.Infrastructure.Auth
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly IServiceChangeTenant _serviceChangeTenant;
         private readonly ITokenService _tokenService;
         private readonly ApplicationDbContext _context;
 
         public AuthService(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            IServiceChangeTenant serviceChangeTenant,
             ITokenService tokenService,
             ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _serviceChangeTenant = serviceChangeTenant;
             _tokenService = tokenService;
             _context = context;
         }
@@ -64,7 +59,7 @@ namespace Vertical360_back.Infrastructure.Auth
                 resultDto.RedirectUrl = "home/selected-role";
             }
             // Obtener las compañías (Clientes) asociadas a este usuario
-            var associatedClients = await _context.LinkUsersCommpany
+            var associatedClients = await _context.LinkUsersCompany
                 .Where(link => link.UserId == user.Id)
                 .Join(
                     _context.Companies,
@@ -74,7 +69,6 @@ namespace Vertical360_back.Infrastructure.Auth
                     {
                         CompanyId = company.Id,
                         Name = company.Name,
-                        ConnectionString = company.ConnectionString
                     })
                 .ToListAsync();
 

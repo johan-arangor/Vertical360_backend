@@ -7,7 +7,7 @@ namespace Vertical360_back.Domain.ValueObjects
     {
         public static bool NotValidationTenant(this Type type)
         {
-            var booleans = new List<bool>()
+            var exclusions = new List<bool>()
                 { 
                     type.IsAssignableFrom(typeof(IdentityRole)),
                     type.IsAssignableFrom(typeof(IdentityRoleClaim<string>)),
@@ -19,9 +19,7 @@ namespace Vertical360_back.Domain.ValueObjects
                     typeof(IEntityCommon).IsAssignableFrom(type)
                 };
 
-            var result = booleans.Aggregate((a, b) => a || b);
-
-            return result;
+            return exclusions.Any(x => x);
         }
     }
 }

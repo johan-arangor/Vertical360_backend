@@ -15,9 +15,6 @@ namespace Vertical360_back.Domain.Entityes.Common
         public string PhoneCode { get; set; } = null!;
 
         #region relations
-        public Guid DepartamentId { get; set; }
-        public Departments Department { get; set; } = null!;
-
         public ICollection<Departments> Departments { get; set; } = new List<Departments>();
         #endregion
     }
