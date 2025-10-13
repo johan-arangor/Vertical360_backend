@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using Vertical360_back.Domain.Enums;
 
 namespace Vertical360_back.Domain.Entityes.Tenants
@@ -9,7 +10,7 @@ namespace Vertical360_back.Domain.Entityes.Tenants
 
         [Required]
         [MaxLength(50)]
-        public string FirtsName { get; set; } = null!;
+        public string FirstName { get; set; } = null!;
 
         [MaxLength(50)]
         public string MiddleName { get; set; } = string.Empty;
@@ -29,11 +30,20 @@ namespace Vertical360_back.Domain.Entityes.Tenants
         public DocumentTypeEnum DocumentType { get; set; }
 
         [Required]
-        [MaxLength(20)]
-        public string Apartment { get; set; } = null!;
+        public Boolean IsActive { get; set; }
+
+        [Required]
+        public bool IsOwner { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public string FullName => $"{FirtsName} {MiddleName} {LastName} {MiddleLastName}".Replace("  ", " ").Trim();
+        public string FullName => $"{FirstName} {MiddleName} {LastName} {MiddleLastName}".Replace("  ", " ").Trim();
+
+        #region relations
+        public string UserIdentityId { get; set; } = null!;
+        public IdentityUser UserIdentity { get; set; } = null!;
+        public Guid AdditionalInfoId { get; set; }
+        public ResidentAdditionalInfo? AdditionalInfo { get; set; }
+        #endregion
     }
 }

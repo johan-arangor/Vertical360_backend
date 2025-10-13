@@ -1,7 +1,7 @@
 ﻿using Vertical360_back.Domain.Interfaces;
 using Vertical360_back.Infrastructure.Persistence;
 using Vertical360_back.Infrastructure.Persistence.Repositories;
-using Vertical360_back.Infrastructure.Repositories;
+using Vertical360_back.Infrastructure.Persistence.Repositories.Tenants;
 
 namespace Vertical360_back.Infrastructure
 {
