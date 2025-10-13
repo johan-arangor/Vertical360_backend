@@ -36,6 +36,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<LinkUserCompany> LinkUsersCompany => Set<LinkUserCompany>();
     public DbSet<CompanyUserPermissions> CompanyUserPermissions => Set<CompanyUserPermissions>();
     public DbSet<Resident> Residents => Set<Resident>();
+    public DbSet<ResidentAdditionalInfo> ResidentAdditionalInfo => Set<ResidentAdditionalInfo>();
     #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -402,10 +402,8 @@ namespace Vertical360_back.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("Apartment")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                    b.Property<Guid>("AdditionalInfoId")
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -418,10 +416,16 @@ namespace Vertical360_back.Migrations
                     b.Property<int>("DocumentType")
                         .HasColumnType("int");
 
-                    b.Property<string>("FirtsName")
+                    b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsOwner")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -442,9 +446,39 @@ namespace Vertical360_back.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("UserIdentityId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("AdditionalInfoId")
+                        .IsUnique();
+
+                    b.HasIndex("UserIdentityId");
+
                     b.ToTable("Residents");
+                });
+
+            modelBuilder.Entity("Vertical360_back.Domain.Entityes.Tenants.ResidentAdditionalInfo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("GenderType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ResidentAdditionalInfo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -582,6 +616,25 @@ namespace Vertical360_back.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Vertical360_back.Domain.Entityes.Tenants.Resident", b =>
+                {
+                    b.HasOne("Vertical360_back.Domain.Entityes.Tenants.ResidentAdditionalInfo", "AdditionalInfo")
+                        .WithOne("Resident")
+                        .HasForeignKey("Vertical360_back.Domain.Entityes.Tenants.Resident", "AdditionalInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UserIdentity")
+                        .WithMany()
+                        .HasForeignKey("UserIdentityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AdditionalInfo");
+
+                    b.Navigation("UserIdentity");
+                });
+
             modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.Companies", b =>
                 {
                     b.Navigation("CompanyUserPermissions");
@@ -597,6 +650,11 @@ namespace Vertical360_back.Migrations
             modelBuilder.Entity("Vertical360_back.Domain.Entityes.Common.Departments", b =>
                 {
                     b.Navigation("Cities");
+                });
+
+            modelBuilder.Entity("Vertical360_back.Domain.Entityes.Tenants.ResidentAdditionalInfo", b =>
+                {
+                    b.Navigation("Resident");
                 });
 #pragma warning restore 612, 618
         }
