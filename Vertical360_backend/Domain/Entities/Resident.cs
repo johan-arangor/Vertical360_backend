@@ -2,9 +2,8 @@
 
 namespace Vertical360_backend.Domain.Entities
 {
-    public class Resident
+    public class Resident : BaseEntity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
         public string TenantId { get; set; } = null!;
         public string FirstName { get; set; } = null!;
         public string SecondName { get; set; } = null!;
