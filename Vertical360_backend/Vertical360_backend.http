@@ -1,0 +1,6 @@
+@Vertical360_backend_HostAddress = http://localhost:5043
+
+GET {{Vertical360_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
