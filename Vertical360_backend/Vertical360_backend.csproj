@@ -43,4 +43,11 @@
     </None>
   </ItemGroup>
 
+  <!-- Templates de email -->
+  <ItemGroup>
+    <None Include="Infrastructure\EmailTemplates\*.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
