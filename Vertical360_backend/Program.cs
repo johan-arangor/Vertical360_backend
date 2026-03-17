@@ -13,30 +13,37 @@ using Vertical360_backend.Infrastructure.Repositories;
 using Vertical360_backend.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Config
 var configuration = builder.Configuration;
 
-// DB (Shared)
-var sharedConn = configuration.GetConnectionString("SharedDb")
-    ?? throw new InvalidOperationException("ConnectionString SharedDb no encontrada.");
+// ─── 1. Master DB (Identity + Companies + datos compartidos) ────────────────
+var masterConn = configuration.GetConnectionString("SharedDb")
+    ?? throw new InvalidOperationException("ConnectionString 'SharedDb' no encontrada.");
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(sharedConn, ServerVersion.AutoDetect(sharedConn)));
+builder.Services.AddDbContext<MasterDbContext>(options =>
+    options.UseMySql(masterConn, ServerVersion.AutoDetect(masterConn),
+        mySql => mySql.EnableRetryOnFailure(
+            maxRetryCount: 3,
+            maxRetryDelay: TimeSpan.FromSeconds(5),
+            errorNumbersToAdd: null)));
 
-// Identity
+// ─── 2. Identity sobre MasterDbContext ──────────────────────────────────────
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireDigit = true;
 })
-.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddEntityFrameworkStores<MasterDbContext>()
 .AddDefaultTokenProviders();
 
-// JWT
-var jwt = configuration.GetSection("JwtSettings");
-var key = jwt.GetValue<string>("Key");
+// ─── 3. JWT ──────────────────────────────────────────────────────────────────
+var jwtSection = configuration.GetSection("JwtSettings");
+builder.Services.Configure<JwtSettings>(jwtSection);
 
-builder.Services.Configure<JwtSettings>(jwt);
+var jwtKey = jwtSection.GetValue<string>("Key")
+    ?? throw new InvalidOperationException("JwtSettings:Key no configurada.");
 
 builder.Services.AddAuthentication(options =>
 {
@@ -53,47 +60,61 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwt.GetValue<string>("Issuer"),
-        ValidAudience = jwt.GetValue<string>("Audience"),
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+        ValidIssuer = jwtSection.GetValue<string>("Issuer"),
+        ValidAudience = jwtSection.GetValue<string>("Audience"),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+        ClockSkew = TimeSpan.Zero
     };
 });
 
-// CORS - solo desde frontend
+// ─── 4. CORS ─────────────────────────────────────────────────────────────────
+var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+    ?? Array.Empty<string>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontPolicy", policy =>
-    {
-        policy.WithOrigins(configuration.GetSection("Cors:AllowedOrigins").Get<string[]>())
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
+              .AllowAnyMethod());
 });
 
-// DI - interfaces y servicios
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+// ─── 5. Servicios de aplicación ──────────────────────────────────────────────
+builder.Services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
 
+// Infraestructura compartida
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ApplicationDbSeeder>();
+
+// Tenant resolution
 builder.Services.AddScoped<ICurrentTenantService, CurrentTenantService>();
+builder.Services.AddScoped<ITenantDbContextFactory, TenantDbContextFactory>();
 builder.Services.AddScoped<ITenantDatabaseService, TenantDatabaseService>();
+
+// Auth
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IResidentService, ResidentService>();
-builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
 
-builder.Services.AddHttpContextAccessor();
+// Repositorios master
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+// Repositorios tenant (usan ITenantDbContextFactory internamente)
+builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
+
+// Servicios de dominio
+builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<IResidentService, ResidentService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// ─── 6. Pipeline ─────────────────────────────────────────────────────────────
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -103,15 +124,15 @@ if (app.Environment.IsDevelopment())
 app.UseCors("FrontPolicy");
 app.UseRouting();
 app.UseAuthentication();
-// Tenant middleware debe ejecutarse antes de autorizar peticiones que dependan del tenant
+
+// TenantMiddleware DESPUÉS de UseAuthentication para que el JWT ya esté procesado
 app.UseMiddleware<TenantMiddleware>();
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 app.MapControllers();
 
-// Inicial seed (shared)
+// ─── 7. Seed inicial ─────────────────────────────────────────────────────────
 using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetRequiredService<ApplicationDbSeeder>();
