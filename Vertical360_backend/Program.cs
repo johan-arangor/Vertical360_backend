@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Vertical360_backend.Application.Configuration;
 using Vertical360_backend.Application.Interfaces;
 using Vertical360_backend.Domain.Entities;
 using Vertical360_backend.Infrastructure.Auth;
@@ -34,6 +35,9 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 // JWT
 var jwt = configuration.GetSection("JwtSettings");
 var key = jwt.GetValue<string>("Key");
+
+builder.Services.Configure<JwtSettings>(jwt);
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -67,6 +71,8 @@ builder.Services.AddCors(options =>
 });
 
 // DI - interfaces y servicios
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
 builder.Services.AddScoped<ApplicationDbSeeder>();
 builder.Services.AddScoped<ICurrentTenantService, CurrentTenantService>();
 builder.Services.AddScoped<ITenantDatabaseService, TenantDatabaseService>();
@@ -76,6 +82,8 @@ builder.Services.AddScoped<IResidentService, ResidentService>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
 
 builder.Services.AddHttpContextAccessor();
 
