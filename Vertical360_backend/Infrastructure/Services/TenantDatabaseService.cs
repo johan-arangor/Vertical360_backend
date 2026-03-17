@@ -1,47 +1,65 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Vertical360_backend.Application.Interfaces;
 using Vertical360_backend.Infrastructure.Persistence;
 
 namespace Vertical360_backend.Infrastructure.Services
 {
+    /// <summary>
+    /// Gestiona el ciclo de vida de las bases de datos de cada tenant:
+    /// creación, migración y eliminación (rollback).
+    /// </summary>
     public class TenantDatabaseService : ITenantDatabaseService
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<TenantDatabaseService> _logger;
 
-        public TenantDatabaseService(IConfiguration configuration)
+        public TenantDatabaseService(
+            IConfiguration configuration,
+            ILogger<TenantDatabaseService> logger)
         {
             _configuration = configuration;
+            _logger = logger;
         }
 
         public async Task<DbContext> GetTenantDbContextAsync(string tenantId)
         {
-            var baseConn = _configuration.GetConnectionString("TenantBase")
-                ?? throw new InvalidOperationException("ConnectionString TenantBase no encontrada.");
-
-            // Ejemplo: reemplazar placeholder con el tenantId
-            var connString = baseConn.Replace("{tenant}", tenantId);
-
-            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseMySql(connString, ServerVersion.AutoDetect(connString));
-
-            // provide a non-null IHttpContextAccessor to avoid NRE in SaveChangesAsync
-            var dbContext = new ApplicationDbContext(optionsBuilder.Options, new HttpContextAccessor());
-            await dbContext.Database.EnsureCreatedAsync();
-            return dbContext;
+            var options = BuildOptions(tenantId);
+            return new TenantDbContext(options);
         }
 
         public async Task CreateTenantDatabaseAsync(string tenantId)
         {
-            var baseConn = _configuration.GetConnectionString("TenantBase")
-                ?? throw new InvalidOperationException("ConnectionString TenantBase no encontrada.");
+            _logger.LogInformation("Creando base de datos para tenant: {TenantId}", tenantId);
+            var options = BuildOptions(tenantId);
+            await using var context = new TenantDbContext(options);
+            await context.Database.EnsureCreatedAsync();
+            _logger.LogInformation("Base de datos creada para tenant: {TenantId}", tenantId);
+        }
 
-            var connString = baseConn.Replace("{tenant}", tenantId);
+        public async Task DropTenantDatabaseAsync(string tenantId)
+        {
+            _logger.LogWarning("Eliminando base de datos del tenant: {TenantId} (rollback)", tenantId);
+            var options = BuildOptions(tenantId);
+            await using var context = new TenantDbContext(options);
+            await context.Database.EnsureDeletedAsync();
+            _logger.LogWarning("Base de datos eliminada para tenant: {TenantId}", tenantId);
+        }
 
-            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseMySql(connString, ServerVersion.AutoDetect(connString));
+        private DbContextOptions<TenantDbContext> BuildOptions(string tenantId)
+        {
+            var serverBase = _configuration.GetConnectionString("ServerBase")
+                ?? throw new InvalidOperationException("ConnectionString 'ServerBase' no encontrada.");
 
-            var dbContext = new ApplicationDbContext(optionsBuilder.Options, new HttpContextAccessor());
-            await dbContext.Database.EnsureCreatedAsync();
+            var dbName = $"v360_tenant_{tenantId}";
+            var connString = $"{serverBase}Database={dbName};";
+
+            return new DbContextOptionsBuilder<TenantDbContext>()
+                .UseMySql(connString, ServerVersion.AutoDetect(connString),
+                    mySql => mySql.EnableRetryOnFailure(
+                        maxRetryCount: 3,
+                        maxRetryDelay: TimeSpan.FromSeconds(5),
+                        errorNumbersToAdd: null))
+                .Options;
         }
     }
 }
