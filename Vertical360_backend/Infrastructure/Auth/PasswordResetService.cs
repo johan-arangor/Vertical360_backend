@@ -12,15 +12,18 @@ namespace Vertical360_backend.Infrastructure.Auth
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly MasterDbContext _context;
         private readonly IEmailService _emailService;
+        private readonly IEmailTemplateService _templateService;
 
         public PasswordResetService(
             UserManager<ApplicationUser> userManager,
             MasterDbContext context,
-            IEmailService emailService)
+            IEmailService emailService,
+            IEmailTemplateService templateService)
         {
             _userManager = userManager;
             _context = context;
             _emailService = emailService;
+            _templateService = templateService;
         }
 
         public async Task ForgotPasswordAsync(ForgotPasswordRequestDto model)
@@ -45,16 +48,15 @@ namespace Vertical360_backend.Infrastructure.Auth
             });
             await _context.SaveChangesAsync();
 
+            var body = await _templateService.RenderAsync("PasswordResetOtp", new Dictionary<string, string>
+            {
+                { "OTP_CODE", code }
+            });
+
             await _emailService.SendAsync(
                 to: model.Email,
                 subject: "Recuperación de contraseña - Vertical360",
-                body: $@"
-                <h2>Recuperación de contraseña</h2>
-                <p>Tu código de verificación es:</p>
-                <h1 style='letter-spacing: 8px;'>{code}</h1>
-                <p>Este código expira en <strong>10 minutos</strong>.</p>
-                <p>Si no solicitaste este código, ignora este mensaje.</p>"
-            );
+                body: body);
         }
 
         public async Task ResetPasswordAsync(ResetPasswordRequestDto model)
@@ -83,3 +85,4 @@ namespace Vertical360_backend.Infrastructure.Auth
         }
     }
 }
+
