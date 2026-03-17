@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Vertical360_backend.Application.DTOs.Companies;
 using Vertical360_backend.Application.Interfaces;
 using Vertical360_backend.Domain.Entities;
@@ -8,8 +8,9 @@ namespace Vertical360_backend.Infrastructure.Repositories
 {
     public class CompanyRepository : ICompanyRepository
     {
-        private readonly ApplicationDbContext _context;
-        public CompanyRepository(ApplicationDbContext context) => _context = context;
+        private readonly MasterDbContext _context;
+
+        public CompanyRepository(MasterDbContext context) => _context = context;
 
         public async Task CreateAsync(Companies company)
         {
@@ -19,8 +20,6 @@ namespace Vertical360_backend.Infrastructure.Repositories
 
         public async Task<List<CompanieResultDto>> GetAllAsync()
         {
-            await _context.Companies.AsNoTracking().ToListAsync();
-
             return await _context.Companies
                 .AsNoTracking()
                 .Select(c => new CompanieResultDto
@@ -33,8 +32,6 @@ namespace Vertical360_backend.Infrastructure.Repositories
 
         public async Task<CompanieResultDto?> GetByIdAsync(Guid id)
         {
-            await _context.Companies.FindAsync(id);
-
             return await _context.Companies
                 .AsNoTracking()
                 .Where(c => c.Id == id)

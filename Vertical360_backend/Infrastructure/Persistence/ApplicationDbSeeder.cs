@@ -9,12 +9,12 @@ namespace Vertical360_backend.Infrastructure.Persistence
 {
     public class ApplicationDbSeeder
     {
-        private readonly ApplicationDbContext _context;
+        private readonly MasterDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
 
         public ApplicationDbSeeder(
-            ApplicationDbContext context,
+            MasterDbContext context,
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager)
         {
