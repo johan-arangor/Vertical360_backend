@@ -5,6 +5,9 @@ namespace Vertical360_backend.Application.Interfaces
 {
     public interface ITokenService
     {
-        Task<string> GenerateTokenAsync(ApplicationUser user, Guid companyId);
+        // Genera token incluyendo claim del tenant. tenantKey es la clave del tenant (Companies.TenantKey).
+        Task<string> GenerateTokenAsync(ApplicationUser user, Guid companyId, string tenantKey);
+        Task<string> GeneratePreAuthTokenAsync(ApplicationUser user);
+        ClaimsPrincipal ValidatePreAuthToken(string token);
     }
 }
