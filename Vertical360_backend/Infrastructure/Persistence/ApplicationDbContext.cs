@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Vertical360_backend.Application.DTOs.Auth;
 using Vertical360_backend.Domain.Entities;
 using Vertical360_backend.Domain.ValueObjects;
 
@@ -15,6 +16,7 @@ namespace Vertical360_backend.Infrastructure.Persistence
         }
 
         // DbSets de las entidades
+        public DbSet<PasswordResetOtp> PasswordResetOtps { get; set; }
         public DbSet<Companies> Companies => Set<Companies>();
         public DbSet<Resident> Residents => Set<Resident>();
         public DbSet<LinkUserCompany> LinkUsersCompany => Set<LinkUserCompany>();

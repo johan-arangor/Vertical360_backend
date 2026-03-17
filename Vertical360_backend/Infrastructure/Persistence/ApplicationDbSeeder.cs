@@ -39,13 +39,13 @@ namespace Vertical360_backend.Infrastructure.Persistence
                 }
 
                 // SuperAdmin global
-                var superEmail = "superadmin@vertical360.local";
+                var superEmail = "superadmin@vertical360.com";
                 var superUser = await _userManager.FindByEmailAsync(superEmail);
                 if (superUser == null)
                 {
                     superUser = new ApplicationUser
                     {
-                        UserName = "superadmin",
+                        UserName = "1234567890",
                         Email = superEmail,
                         EmailConfirmed = true
                     };
