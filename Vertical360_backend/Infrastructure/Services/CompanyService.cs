@@ -44,8 +44,7 @@ namespace Vertical360_backend.Infrastructure.Services
 
         public async Task<CompanieResultDto> CreateCompanyAsync(CompanyRequestDto dto)
         {
-            var userId = _httpContextAccessor.HttpContext?.User
-                ?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userId = _httpContextAccessor.HttpContext?.User ?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userId))
                 throw new UnauthorizedAccessException("No se pudo obtener el usuario autenticado.");
@@ -54,9 +53,19 @@ namespace Vertical360_backend.Infrastructure.Services
                 throw new InvalidOperationException($"Ya existe una unidad con el NIT '{dto.Nit}'.");
 
             var tenantKey = Guid.NewGuid().ToString("N");
-            var adminPassword = string.IsNullOrWhiteSpace(dto.AdminPassword)
-                ? GenerateTemporaryPassword()
-                : dto.AdminPassword;
+            var adminPassword = string.IsNullOrWhiteSpace(dto.AdminPassword) ? GenerateTemporaryPassword() : dto.AdminPassword;
+            var country = await _context.Countries.FirstOrDefaultAsync(c => c.Name == dto.Country);
+            var department = await _context.Departments.FirstOrDefaultAsync(d => d.Name == dto.Department);
+            var city = await _context.Cities.FirstOrDefaultAsync(c => c.Name == dto.City);
+
+            if (country == null)
+                throw new InvalidOperationException($"No se encontró el país con ID '{dto.Country}'.");
+
+            if (department == null)
+                throw new InvalidOperationException($"No se encontró el departamento con ID '{dto.Department}'.");
+
+            if (city == null)
+                throw new InvalidOperationException($"No se encontró la ciudad con ID '{dto.City}'.");
 
             Companies? company = null;
             ApplicationUser? admin = null;
@@ -66,7 +75,7 @@ namespace Vertical360_backend.Infrastructure.Services
 
             try
             {
-                // 1. Crear la unidad residencial
+                // Crear la unidad residencial
                 company = new Companies
                 {
                     Nit = dto.Nit,
@@ -75,9 +84,9 @@ namespace Vertical360_backend.Infrastructure.Services
                     Phone = dto.Phone,
                     MobilePhone = dto.MobilePhone,
                     Address = dto.Address,
-                    CountryId = dto.CountryId,
-                    DepartmentId = dto.DepartmentId,
-                    CityId = dto.CityId,
+                    CountryId = country.Id,
+                    DepartmentId = department.Id,
+                    CityId = city.Id,
                     PostalCode = dto.PostalCode,
                     LegalRepresentativeName = dto.LegalRepresentativeName,
                     LegalRepresentativeEmail = dto.LegalRepresentativeEmail,
@@ -92,7 +101,7 @@ namespace Vertical360_backend.Infrastructure.Services
                 _context.Companies.Add(company);
                 await _context.SaveChangesAsync();
 
-                // 2. Crear usuario administrador inicial
+                // Crear usuario administrador inicial
                 admin = new ApplicationUser
                 {
                     UserName = dto.AdminEmail,
@@ -105,7 +114,7 @@ namespace Vertical360_backend.Infrastructure.Services
 
                 await _userManager.AddToRoleAsync(admin, RoleTypeEnum.Admin.ToString());
 
-                // 3. Vincular admin a la unidad
+                // Vincular admin a la unidad
                 _context.LinkUsersCompany.Add(new LinkUserCompany
                 {
                     UserId = admin.Id,
@@ -114,7 +123,7 @@ namespace Vertical360_backend.Infrastructure.Services
                 });
                 await _context.SaveChangesAsync();
 
-                // 4. Crear BD del tenant (DDL fuera de transacción EF)
+                // Crear BD del tenant (DDL fuera de transacción EF)
                 await _tenantDatabaseService.CreateTenantDatabaseAsync(tenantKey);
                 tenantDbCreated = true;
 
@@ -124,7 +133,7 @@ namespace Vertical360_backend.Infrastructure.Services
                     "Unidad '{Name}' (NIT: {Nit}) creada. TenantKey: {TenantKey}",
                     dto.Name, dto.Nit, tenantKey);
 
-                // 5. Enviar email de bienvenida (fuera de transacción — no crítico)
+                // Enviar email de bienvenida (fuera de transacción — no crítico)
                 await SendWelcomeEmailAsync(dto.AdminEmail, dto.AdminName, dto.Name, adminPassword);
             }
             catch (Exception ex)
@@ -157,8 +166,7 @@ namespace Vertical360_backend.Infrastructure.Services
             return (await _companyRepository.GetByIdAsync(company.Id))!;
         }
 
-        public async Task<List<CompanieResultDto>> GetAllAsync()
-            => await _companyRepository.GetAllAsync();
+        public async Task<List<CompanieResultDto>> GetAllAsync() => await _companyRepository.GetAllAsync();
 
         public async Task<CompanieResultDto> GetByIdAsync(Guid id)
         {
@@ -170,17 +178,28 @@ namespace Vertical360_backend.Infrastructure.Services
 
         public async Task<CompanieResultDto> UpdateAsync(Guid id, CompanyUpdateDto dto)
         {
-            var entity = await _companyRepository.GetEntityByIdAsync(id)
-                ?? throw new KeyNotFoundException($"Unidad con Id '{id}' no encontrada.");
+            var entity = await _companyRepository.GetEntityByIdAsync(id) ?? throw new KeyNotFoundException($"Unidad con Id '{id}' no encontrada.");
+            var country = await _context.Countries.FirstOrDefaultAsync(c => c.Name == dto.Country);
+            var department = await _context.Departments.FirstOrDefaultAsync(d => d.Name == dto.Department);
+            var city = await _context.Cities.FirstOrDefaultAsync(c => c.Name == dto.City);
+
+            if (country == null)
+                throw new InvalidOperationException($"No se encontró el país con ID '{dto.Country}'.");
+
+            if (department == null)
+                throw new InvalidOperationException($"No se encontró el departamento con ID '{dto.Department}'.");
+
+            if (city == null)
+                throw new InvalidOperationException($"No se encontró la ciudad con ID '{dto.City}'.");
 
             if (!string.IsNullOrWhiteSpace(dto.Name)) entity.Name = dto.Name;
             if (!string.IsNullOrWhiteSpace(dto.BusinessName)) entity.BusinessName = dto.BusinessName;
             if (dto.Phone is not null) entity.Phone = dto.Phone;
             if (dto.MobilePhone is not null) entity.MobilePhone = dto.MobilePhone;
             if (dto.Address is not null) entity.Address = dto.Address;
-            if (dto.CountryId.HasValue) entity.CountryId = dto.CountryId;
-            if (dto.DepartmentId.HasValue) entity.DepartmentId = dto.DepartmentId;
-            if (dto.CityId.HasValue) entity.CityId = dto.CityId;
+            if (dto.Country is not null) entity.CountryId = country.Id;
+            if (dto.Country is not null) entity.DepartmentId = department.Id;
+            if (dto.Country is not null) entity.CityId = city.Id;
             if (dto.PostalCode is not null) entity.PostalCode = dto.PostalCode;
             if (dto.LegalRepresentativeName is not null) entity.LegalRepresentativeName = dto.LegalRepresentativeName;
             if (dto.LegalRepresentativeEmail is not null) entity.LegalRepresentativeEmail = dto.LegalRepresentativeEmail;
@@ -226,8 +245,7 @@ namespace Vertical360_backend.Infrastructure.Services
             return new string(pwd.OrderBy(_ => Guid.NewGuid()).ToArray());
         }
 
-        private async Task SendWelcomeEmailAsync(
-            string adminEmail, string adminName, string companyName, string password)
+        private async Task SendWelcomeEmailAsync(string adminEmail, string adminName, string companyName, string password)
         {
             try
             {

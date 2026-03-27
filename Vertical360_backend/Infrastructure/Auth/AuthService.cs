@@ -31,7 +31,8 @@ namespace Vertical360_backend.Infrastructure.Auth
         {
             var userName = model.UserName?.Trim();
             var password = model.Password ?? string.Empty;
-
+            Console.WriteLine($"UserName: {userName}");
+            Console.WriteLine($"Password: {password}");
             if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrEmpty(password))
                 throw new UnauthorizedAccessException("UserName y Password son requeridos.");
 
