@@ -1,6 +1,6 @@
-ï»¿using Microsoft.AspNetCore.Mvc;
-using Vertical360_backend.Application.DTOs.Auth;
-using Vertical360_backend.Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Vertical360.Application.DTOs.Auth;
+using Vertical360.Application.Interfaces;
 
 namespace Vertical360_backend.Api.Controllers
 {
@@ -69,8 +69,8 @@ namespace Vertical360_backend.Api.Controllers
             try
             {
                 await _passwordResetService.ForgotPasswordAsync(model);
-                // Respuesta genÃ©rica para no revelar si el email existe
-                return Ok(new { message = "Si el correo existe, recibirÃ¡s un cÃ³digo de verificaciÃ³n." });
+                // Respuesta genérica para no revelar si el email existe
+                return Ok(new { message = "Si el correo existe, recibirás un código de verificación." });
             }
             catch (Exception ex)
             {
@@ -84,7 +84,7 @@ namespace Vertical360_backend.Api.Controllers
             try
             {
                 await _passwordResetService.ResetPasswordAsync(model);
-                return Ok(new { message = "ContraseÃ±a actualizada correctamente." });
+                return Ok(new { message = "Contraseña actualizada correctamente." });
             }
             catch (UnauthorizedAccessException uex)
             {
@@ -102,7 +102,7 @@ namespace Vertical360_backend.Api.Controllers
             await emailService.SendAsync(
                 to: to,
                 subject: "Test Vertical360",
-                body: "<h1>Email funcionando âœ…</h1>"
+                body: "<h1>Email funcionando ?</h1>"
             );
             return Ok("Email enviado.");
         }

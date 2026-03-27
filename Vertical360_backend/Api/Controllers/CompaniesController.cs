@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Vertical360_backend.Application.DTOs.Companies;
-using Vertical360_backend.Application.Interfaces;
-using Vertical360_backend.Domain.Entities;
+using Vertical360.Application.DTOs.Companies;
+using Vertical360.Application.Interfaces;
+using Vertical360.Core.Entities;
 
 namespace Vertical360_backend.Api.Controllers
 {
