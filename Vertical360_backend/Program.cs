@@ -111,7 +111,63 @@ builder.Services.AddScoped<IResidentService, ResidentService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title       = "Vertical360 API",
+        Version     = "v1",
+        Description = "API REST para la administración de propiedades horizontales. " +
+                      "Gestiona unidades residenciales (tenants), residentes, visitantes, " +
+                      "domicilios, pagos y comunicación interna.",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name  = "Equipo Vertical360",
+            Email = "soporte@vertical360.com"
+        }
+    });
+
+    // Esquema de seguridad JWT — aparece el botón "Authorize" en Swagger UI
+    var jwtScheme = new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name         = "Authorization",
+        Type         = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme       = "bearer",
+        BearerFormat = "JWT",
+        In           = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description  = "Ingresa el token JWT obtenido en **/api/auth/select-tenant**.\n\n" +
+                       "Formato: `Bearer {token}`"
+    };
+    var jwtRef = new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Id   = "Bearer",
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme
+                }
+            },
+            Array.Empty<string>()
+        }
+    };
+    options.AddSecurityDefinition("Bearer", jwtScheme);
+    options.AddSecurityRequirement(jwtRef);
+
+    // Habilita [SwaggerOperation], [SwaggerResponse] y demás anotaciones
+    options.EnableAnnotations();
+
+    // Ordena los endpoints por nombre del controller (tag)
+    options.OrderActionsBy(api => $"{api.ActionDescriptor.RouteValues["controller"]}_{api.HttpMethod}");
+
+    // Incluye comentarios XML si el archivo existe
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+        options.IncludeXmlComments(xmlPath);
+});
 
 // ─── 6. Pipeline ─────────────────────────────────────────────────────────────
 var app = builder.Build();
@@ -119,7 +175,19 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Vertical360 API v1");
+        options.RoutePrefix         = "swagger";
+        options.DocumentTitle       = "Vertical360 — API Docs";
+        options.DefaultModelsExpandDepth(1);
+        options.DefaultModelExpandDepth(2);
+        options.DisplayRequestDuration();
+        options.EnableFilter();
+        options.EnableDeepLinking();
+        // Persiste el token JWT entre recargas de la página
+        options.ConfigObject.AdditionalItems["persistAuthorization"] = true;
+    });
 }
 
 app.UseCors("FrontPolicy");
