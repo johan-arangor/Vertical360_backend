@@ -1,0 +1,9 @@
+[
+  { "name": "Medellín", "department": "Antioquia", "acronym": "MED", "code": "4" },
+  { "name": "Envigado", "department": "Antioquia", "acronym": "ENV", "code": "4" },
+  { "name": "Itagüí", "department": "Antioquia", "acronym": "ITA", "code": "4" },
+  { "name": "Bello", "department": "Antioquia", "acronym": "BEL", "code": "4" },
+  { "name": "Rionegro", "department": "Antioquia", "acronym": "RIO", "code": "4" },
+  { "name": "Apartadó", "department": "Antioquia", "acronym": "APA", "code": "4" },
+  { "name": "Turbo", "department": "Antioquia", "acronym": "TUR", "code": "4" }
+]
