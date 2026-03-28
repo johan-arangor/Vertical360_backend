@@ -128,15 +128,23 @@ app.UseAuthentication();
 // TenantMiddleware DESPUÉS de UseAuthentication para que el JWT ya esté procesado
 app.UseMiddleware<TenantMiddleware>();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
 // ─── 7. Seed inicial ─────────────────────────────────────────────────────────
-using (var scope = app.Services.CreateScope())
+try 
 {
-    var seeder = scope.ServiceProvider.GetRequiredService<ApplicationDbSeeder>();
-    await seeder.SeedAsync();
+    using (var scope = app.Services.CreateScope())
+    {
+        var seeder = scope.ServiceProvider.GetRequiredService<ApplicationDbSeeder>();
+        await seeder.SeedAsync();
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"[Critico] El seeder falló: {ex.Message}");
+    // No tiramos la app si el seed falla, solo alertamos.
 }
 
 app.Run();
