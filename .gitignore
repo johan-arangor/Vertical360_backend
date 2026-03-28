@@ -37,3 +37,6 @@ Thumbs.db
 
 # Kestrel y IIS Express
 temp/
+
+# Archivos de reglas y contextos de IA
+.agent/
