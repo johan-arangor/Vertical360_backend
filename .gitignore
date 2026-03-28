@@ -40,3 +40,13 @@ temp/
 
 # Archivos de reglas y contextos de IA
 .agent/
+
+# Archivos de entorno
+.env
+.env.local
+.env.example
+.env.production
+.env.staging
+.env.test
+.env.development
+.env.qa
