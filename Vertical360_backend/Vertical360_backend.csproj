@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -25,22 +25,11 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Application\Services\" />
-    <Folder Include="SeedData\" />
-  </ItemGroup>
 
-  <!-- Seed JSON files: marcados como None para evitar duplicado implícito de Content -->
   <ItemGroup>
-    <None Include="SeedData\countries.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SeedData\departments.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SeedData\cities.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\Vertical360.Core\Vertical360.Core.csproj" />
+    <ProjectReference Include="..\Vertical360.Application\Vertical360.Application.csproj" />
+    <ProjectReference Include="..\Vertical360.Infrastructure\Vertical360.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
