@@ -29,17 +29,24 @@ namespace Vertical360.Infrastructure.Auth
 
         public async Task<LoginResultDto> LoginAsync(LoginRequestDto model)
         {
-            var userName = model.UserName?.Trim();
+            // Intentamos obtener el identificador (Email o UserName) según lo que el frontend envíe
+            var loginIdentifier = (model.Email ?? model.UserName)?.Trim();
             var password = model.Password ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrEmpty(password))
-                throw new UnauthorizedAccessException("UserName y Password son requeridos.");
+            if (string.IsNullOrWhiteSpace(loginIdentifier) || string.IsNullOrWhiteSpace(password))
+                throw new UnauthorizedAccessException("Debe proporcionar un Usuario (Email) y una Contraseña.");
 
-            var user = await _userManager.FindByNameAsync(userName);
-            if (user == null) throw new UnauthorizedAccessException("Usuario no encontrado.");
+            // Buscar al usuario. Intentamos por Email primero y luego por UserName.
+            var user = await _userManager.FindByEmailAsync(loginIdentifier) 
+                       ?? await _userManager.FindByNameAsync(loginIdentifier);
 
-            var signIn = await _signInManager.PasswordSignInAsync(userName, password, model.RememberMe, false);
-            if (!signIn.Succeeded) throw new UnauthorizedAccessException("Credenciales inválidas.");
+            if (user == null) 
+                throw new UnauthorizedAccessException("No se encontró ningún usuario con esas credenciales.");
+            // Realizar el Sign-In con Identity (esta función maneja el hash PBKDF2/SHA interno de Identity)
+            var signIn = await _signInManager.CheckPasswordSignInAsync(user, password, false);
+
+            if (!signIn.Succeeded) 
+                throw new UnauthorizedAccessException("La contraseña ingresada para el usuario indicado no es correcta.");
 
             // Carga los vínculos y las compañías en una sola consulta — sin N+1
             var links = await _context.LinkUsersCompany

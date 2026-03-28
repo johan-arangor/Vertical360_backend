@@ -69,8 +69,8 @@ namespace Vertical360_backend.Api.Controllers
             try
             {
                 await _passwordResetService.ForgotPasswordAsync(model);
-                // Respuesta genérica para no revelar si el email existe
-                return Ok(new { message = "Si el correo existe, recibirás un código de verificación." });
+                // Respuesta genï¿½rica para no revelar si el email existe
+                return Ok(new { message = "Si el correo existe, recibirï¿½s un cï¿½digo de verificaciï¿½n." });
             }
             catch (Exception ex)
             {
@@ -84,7 +84,7 @@ namespace Vertical360_backend.Api.Controllers
             try
             {
                 await _passwordResetService.ResetPasswordAsync(model);
-                return Ok(new { message = "Contraseña actualizada correctamente." });
+                return Ok(new { message = "Contraseï¿½a actualizada correctamente." });
             }
             catch (UnauthorizedAccessException uex)
             {
