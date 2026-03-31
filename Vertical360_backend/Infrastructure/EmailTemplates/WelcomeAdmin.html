@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bienvenido a Vertical360</title>
+  <style>
+    body { margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif; }
+    .wrapper { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .header { background-color: #1a1a2e; padding: 32px 40px; text-align: center; }
+    .header h1 { color: #ffffff; font-size: 22px; margin: 0; letter-spacing: 1px; }
+    .header p { color: #a0a8c0; font-size: 14px; margin: 8px 0 0; }
+    .body { padding: 40px; color: #333333; }
+    .body p { font-size: 15px; line-height: 1.7; margin: 0 0 16px; }
+    .body h2 { font-size: 18px; color: #1a1a2e; margin: 0 0 20px; }
+    .credentials { background: #f0f4ff; border-left: 4px solid #4a6cf7; border-radius: 4px; padding: 20px 24px; margin: 24px 0; }
+    .credentials table { width: 100%; border-collapse: collapse; }
+    .credentials td { padding: 6px 0; font-size: 14px; vertical-align: top; }
+    .credentials td:first-child { color: #888888; width: 140px; }
+    .credentials td:last-child { color: #1a1a2e; font-weight: bold; word-break: break-all; }
+    .warning { background: #fff8e1; border-left: 4px solid #ffc107; border-radius: 4px; padding: 16px 20px; margin: 24px 0; font-size: 13px; color: #555; }
+    .btn { display: inline-block; background-color: #4a6cf7; color: #ffffff; padding: 14px 32px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 15px; margin: 8px 0; }
+    .divider { border: none; border-top: 1px solid #eeeeee; margin: 32px 0; }
+    .footer { background-color: #f8f8f8; padding: 24px 40px; text-align: center; }
+    .footer p { font-size: 12px; color: #aaaaaa; margin: 0; line-height: 1.6; }
+    .footer a { color: #4a6cf7; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <h1>VERTICAL 360</h1>
+      <p>Plataforma de Administración de Propiedades Horizontales</p>
+    </div>
+    <div class="body">
+      <h2>¡Bienvenido, {{ADMIN_NAME}}!</h2>
+      <p>Tu cuenta de administrador para la unidad <strong>{{COMPANY_NAME}}</strong> ha sido creada exitosamente. A continuación encontrarás tus credenciales de acceso:</p>
+
+      <div class="credentials">
+        <table>
+          <tr>
+            <td>Unidad:</td>
+            <td>{{COMPANY_NAME}}</td>
+          </tr>
+          <tr>
+            <td>Usuario:</td>
+            <td>{{ADMIN_EMAIL}}</td>
+          </tr>
+          <tr>
+            <td>Contraseña:</td>
+            <td>{{ADMIN_PASSWORD}}</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="warning">
+        ⚠️ <strong>Importante:</strong> Por seguridad, debes cambiar tu contraseña en el primer inicio de sesión. Esta contraseña es temporal.
+      </div>
+
+      <p style="text-align:center; margin-top: 32px;">
+        <a href="{{LOGIN_URL}}" class="btn">Iniciar sesión</a>
+      </p>
+
+      <hr class="divider" />
+      <p style="font-size:13px; color:#888;">Si no esperabas este correo o crees que fue un error, contacta a soporte en <a href="mailto:soporte@vertical360.com">soporte@vertical360.com</a></p>
+    </div>
+    <div class="footer">
+      <p>© {{YEAR}} Vertical360 · Todos los derechos reservados</p>
+      <p><a href="#">Política de privacidad</a> · <a href="#">Soporte</a></p>
+    </div>
+  </div>
+</body>
+</html>

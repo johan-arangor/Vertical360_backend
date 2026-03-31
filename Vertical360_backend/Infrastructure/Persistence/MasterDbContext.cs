@@ -31,6 +31,42 @@ namespace Vertical360_backend.Infrastructure.Persistence
 
             builder.Ignore<ApplicationUserRole>();
 
+            // ── Companies ────────────────────────────────────────────────────
+            builder.Entity<Companies>(e =>
+            {
+                e.HasIndex(x => x.Nit).IsUnique();
+                e.Property(x => x.Nit).IsRequired().HasMaxLength(20);
+                e.Property(x => x.Name).IsRequired().HasMaxLength(200);
+                e.Property(x => x.BusinessName).IsRequired().HasMaxLength(300);
+                e.Property(x => x.AdminEmail).IsRequired().HasMaxLength(200);
+                e.Property(x => x.AdminName).IsRequired().HasMaxLength(200);
+                e.Property(x => x.Phone).HasMaxLength(20);
+                e.Property(x => x.MobilePhone).HasMaxLength(20);
+                e.Property(x => x.PostalCode).HasMaxLength(10);
+                e.Property(x => x.LegalRepresentativeEmail).HasMaxLength(200);
+                e.Property(x => x.LegalRepresentativeName).HasMaxLength(200);
+                e.Property(x => x.LegalRepresentativePhone).HasMaxLength(20);
+                e.Property(x => x.LegalRepresentativeMobile).HasMaxLength(20);
+                e.Property(x => x.AdminPhone).HasMaxLength(20);
+                e.Property(x => x.TenantKey).HasMaxLength(50);
+
+                e.HasOne(x => x.Country)
+                 .WithMany()
+                 .HasForeignKey(x => x.CountryId)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.Department)
+                 .WithMany()
+                 .HasForeignKey(x => x.DepartmentId)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.City)
+                 .WithMany()
+                 .HasForeignKey(x => x.CityId)
+                 .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // ── LinkUserCompany ──────────────────────────────────────────────
             builder.Entity<LinkUserCompany>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.CompanyId });
